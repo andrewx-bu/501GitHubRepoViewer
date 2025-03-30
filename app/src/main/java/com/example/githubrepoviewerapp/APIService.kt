@@ -8,10 +8,14 @@ import retrofit2.http.GET
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface APIService {
     @GET("users/{username}/repos")
-    suspend fun getUserRepos(@Path("username") username: String): List<Repo>
+    suspend fun getUserRepos(
+        @Path("username") username: String,
+        @Query("page") page: Int = 1
+    ): List<Repo>
 
     companion object {
         private const val BASE_URL = "https://api.github.com/"

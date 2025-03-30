@@ -18,7 +18,6 @@ import androidx.compose.material.icons.filled.ForkLeft
 import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.PublicOff
 import androidx.compose.material.icons.filled.RemoveRedEye
-import androidx.compose.material.icons.filled.ReportProblem
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
@@ -53,6 +52,8 @@ fun MainScreen(viewModel: MainActivityViewModel = viewModel()) {
     val repoList by viewModel.repoList.collectAsState()
     val errorMsg by viewModel.errorMsg.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+    val currPage by viewModel.currPage.collectAsState()
+    val hasMorePages by viewModel.hasMorePages.collectAsState()
 
     Scaffold {
         Column(modifier = Modifier.padding(15.dp)) {
@@ -63,7 +64,8 @@ fun MainScreen(viewModel: MainActivityViewModel = viewModel()) {
                 onSearch = {
                     active = false
                     if (query.isNotEmpty()) {
-                        viewModel.fetchRepos(query)
+                        viewModel.resetState()
+                        viewModel.fetchRepos(query, 1)
                     }
                 },
                 active = active,
@@ -95,6 +97,45 @@ fun MainScreen(viewModel: MainActivityViewModel = viewModel()) {
                         }
                     }
                     !errorMsg.isNullOrEmpty() -> {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(15.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Button(
+                                onClick = { viewModel.loadPreviousPage(query) },
+                                enabled = currPage > 1,
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Text("Previous")
+                            }
+
+                            Text(
+                                text = "Page $currPage",
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .padding(horizontal = 16.dp)
+                            )
+
+                            Button(
+                                onClick = { viewModel.loadNextPage(query) },
+                                enabled = hasMorePages,
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Text("Next")
+                            }
+                        }
+
+                        if (isLoading) {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        }
+
                         Text(
                             modifier = Modifier.padding(15.dp),
                             text = errorMsg!!,
@@ -102,12 +143,90 @@ fun MainScreen(viewModel: MainActivityViewModel = viewModel()) {
                         )
                     }
                     repoList.isEmpty() && query.isNotEmpty() -> {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(15.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Button(
+                                onClick = { viewModel.loadPreviousPage(query) },
+                                enabled = currPage > 1,
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Text("Previous")
+                            }
+
+                            Text(
+                                text = "Page $currPage",
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .padding(horizontal = 16.dp)
+                            )
+
+                            Button(
+                                onClick = { viewModel.loadNextPage(query) },
+                                enabled = hasMorePages,
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Text("Next")
+                            }
+                        }
+
+                        if (isLoading) {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        }
+
                         Text(
                             modifier = Modifier.padding(15.dp),
                             text = "No repos found."
                         )
                     }
                     else -> {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(15.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Button(
+                                onClick = { viewModel.loadPreviousPage(query) },
+                                enabled = currPage > 1,
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Text("Previous")
+                            }
+
+                            Text(
+                                text = "Page $currPage",
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .padding(horizontal = 16.dp)
+                            )
+
+                            Button(
+                                onClick = { viewModel.loadNextPage(query) },
+                                enabled = hasMorePages,
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Text("Next")
+                            }
+                        }
+
+                        if (isLoading) {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        }
+
                         RepoListScreen(repoList)
                     }
                 }
@@ -119,11 +238,12 @@ fun MainScreen(viewModel: MainActivityViewModel = viewModel()) {
 @Composable
 fun RepoListScreen(repos: List<Repo>) {
     LazyColumn(
-        Modifier.padding(top = 15.dp)
+        modifier = Modifier.padding(top = 15.dp)
     ) {
         items(repos) { repo ->
             RepoItem(repo)
         }
+
     }
 }
 
