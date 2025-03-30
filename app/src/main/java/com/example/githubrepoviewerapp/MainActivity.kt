@@ -97,137 +97,116 @@ fun MainScreen(viewModel: MainActivityViewModel = viewModel()) {
                         }
                     }
                     !errorMsg.isNullOrEmpty() -> {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(15.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Button(
-                                onClick = { viewModel.loadPreviousPage(query) },
-                                enabled = currPage > 1,
-                                modifier = Modifier.weight(1f)
+                        Column {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(15.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Text("Previous")
+                                Button(
+                                    onClick = { viewModel.loadPreviousPage(query) },
+                                    enabled = currPage > 1,
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    Text("Previous")
+                                }
+
+                                Text(
+                                    text = "Page $currPage",
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically)
+                                        .padding(horizontal = 15.dp)
+                                )
+
+                                Button(
+                                    onClick = { viewModel.loadNextPage(query) },
+                                    enabled = hasMorePages,
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    Text("Next")
+                                }
                             }
 
                             Text(
-                                text = "Page $currPage",
-                                modifier = Modifier
-                                    .align(Alignment.CenterVertically)
-                                    .padding(horizontal = 16.dp)
+                                modifier = Modifier.padding(15.dp),
+                                text = errorMsg!!,
+                                color = MaterialTheme.colorScheme.error
                             )
-
-                            Button(
-                                onClick = { viewModel.loadNextPage(query) },
-                                enabled = hasMorePages,
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                Text("Next")
-                            }
                         }
-
-                        if (isLoading) {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                CircularProgressIndicator()
-                            }
-                        }
-
-                        Text(
-                            modifier = Modifier.padding(15.dp),
-                            text = errorMsg!!,
-                            color = MaterialTheme.colorScheme.error
-                        )
                     }
-                    repoList.isEmpty() && query.isNotEmpty() -> {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(15.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Button(
-                                onClick = { viewModel.loadPreviousPage(query) },
-                                enabled = currPage > 1,
-                                modifier = Modifier.weight(1f)
+                    repoList.isEmpty() -> {
+                        Column {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(15.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Text("Previous")
+                                Button(
+                                    onClick = { viewModel.loadPreviousPage(query) },
+                                    enabled = currPage > 1,
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    Text("Previous")
+                                }
+
+                                Text(
+                                    text = "Page $currPage",
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically)
+                                        .padding(horizontal = 15.dp)
+                                )
+
+                                Button(
+                                    onClick = { viewModel.loadNextPage(query) },
+                                    enabled = hasMorePages,
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    Text("Next")
+                                }
                             }
 
                             Text(
-                                text = "Page $currPage",
-                                modifier = Modifier
-                                    .align(Alignment.CenterVertically)
-                                    .padding(horizontal = 16.dp)
+                                modifier = Modifier.padding(15.dp),
+                                text = "Enter a username to search"
                             )
-
-                            Button(
-                                onClick = { viewModel.loadNextPage(query) },
-                                enabled = hasMorePages,
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                Text("Next")
-                            }
                         }
-
-                        if (isLoading) {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                CircularProgressIndicator()
-                            }
-                        }
-
-                        Text(
-                            modifier = Modifier.padding(15.dp),
-                            text = "No repos found."
-                        )
                     }
                     else -> {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(15.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Button(
-                                onClick = { viewModel.loadPreviousPage(query) },
-                                enabled = currPage > 1,
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                Text("Previous")
-                            }
-
-                            Text(
-                                text = "Page $currPage",
+                        Column {
+                            Row(
                                 modifier = Modifier
-                                    .align(Alignment.CenterVertically)
-                                    .padding(horizontal = 16.dp)
-                            )
-
-                            Button(
-                                onClick = { viewModel.loadNextPage(query) },
-                                enabled = hasMorePages,
-                                modifier = Modifier.weight(1f)
+                                    .fillMaxWidth()
+                                    .padding(15.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Text("Next")
-                            }
-                        }
+                                Button(
+                                    onClick = { viewModel.loadPreviousPage(query) },
+                                    enabled = currPage > 1,
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    Text("Previous")
+                                }
 
-                        if (isLoading) {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                CircularProgressIndicator()
-                            }
-                        }
+                                Text(
+                                    text = "Page $currPage",
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically)
+                                        .padding(horizontal = 15.dp)
+                                )
 
-                        RepoListScreen(repoList)
+                                Button(
+                                    onClick = { viewModel.loadNextPage(query) },
+                                    enabled = hasMorePages,
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    Text("Next")
+                                }
+                            }
+
+                            RepoListScreen(repoList)
+                        }
                     }
                 }
             }

@@ -24,11 +24,6 @@ class MainActivityViewModel: ViewModel() {
     private var _currPage = MutableStateFlow(1)
     val currPage: StateFlow<Int> = _currPage
 
-    private var _offset = MutableStateFlow(0)
-    val offset: StateFlow<Int> = _offset
-
-    private val REPOS_PER_PAGE = 30
-
     fun resetState() {
         _repoList.value = emptyList()
         _errorMsg.value = null
@@ -47,13 +42,9 @@ class MainActivityViewModel: ViewModel() {
                     _errorMsg.value = "No repos found for \"$username\"."
                     _hasMorePages.value = false
                 } else {
-                    if (page == 1) {
-                        _repoList.value = response
-                    } else {
-                        _repoList.value += response
-                    }
+                    _repoList.value = response
                     _errorMsg.value = null
-                    _hasMorePages.value = response.isNotEmpty()
+                    _hasMorePages.value = response.size >= 30
                 }
             } catch (e: Exception) {
                 _repoList.value = emptyList()
